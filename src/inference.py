@@ -12,6 +12,7 @@ Usage:
     python -m src.inference --image path/to/fundus.jpg --config configs/config.yaml
 """
 
+import sys
 import cv2
 import numpy as np
 import torch
@@ -21,6 +22,11 @@ import json
 import time
 from pathlib import Path
 from dataclasses import dataclass, asdict
+
+# Ensure project root in sys.path
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 
 from src.data.preprocess import preprocess_image
 from src.xai.gradcam import GradCAMExplainer, GradCAMResult, save_explanation

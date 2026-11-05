@@ -12,13 +12,20 @@ Features:
 """
 
 import os
+import sys
+from pathlib import Path
+
+# Ensure project root is in sys.path on Streamlit Cloud Linux mounts
+ROOT_DIR = Path(__file__).resolve().parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 import cv2
 import time
 import numpy as np
 import pandas as pd
 import streamlit as st
 from PIL import Image
-from pathlib import Path
 
 # Set Streamlit Page Configuration
 st.set_page_config(

@@ -1,0 +1,52 @@
+# EDGE-DR Configuration
+# Central config for all pipeline stages
+
+data:
+  aptos_dir: "data/aptos2019"          # local path after download
+  eyepacs_dir: "data/eyepacs"
+  idrid_dir: "data/idrid"
+  processed_dir: "data/processed"
+  image_size: 512                       # pre-processing target (crop to circle)
+  model_input_size: 224                 # EfficientNet-B0 / MobileNetV3 input
+  num_classes: 5                        # 0-Normal .. 4-PDR
+  val_split: 0.15
+  test_split: 0.10
+  random_seed: 42
+
+model:
+  backbone: "efficientnet_b0"           # options: efficientnet_b0 | mobilenet_v3_large
+  pretrained: true
+  dropout: 0.3
+  label_smoothing: 0.1
+
+training:
+  epochs: 30
+  batch_size: 32
+  learning_rate: 1.0e-4
+  weight_decay: 1.0e-5
+  loss: "focal"                         # focal | weighted_ce
+  focal_gamma: 2.0
+  focal_alpha: "auto"                   # computed from class frequencies
+  scheduler: "cosine"                   # cosine | step
+  warmup_epochs: 2
+  mixed_precision: true
+  checkpoint_dir: "checkpoints/"
+
+quantization:
+  method: "ptq"                         # ptq | qat
+  dtype: "int8"
+  tflite_output: "edge_model/edge_dr.tflite"
+  onnx_output: "edge_model/edge_dr.onnx"
+  representative_samples: 500
+
+xai:
+  method: "gradcam"                     # gradcam | gradcam++ | scorecam
+  target_layer: "features.8.1"         # EfficientNet-B0 last conv block
+  colormap: "jet"
+  alpha: 0.4                            # heatmap blend alpha
+
+inference:
+  confidence_threshold: 0.60
+  referral_grades: [2, 3, 4]           # Moderate, Severe, PDR → refer
+  latency_budget_ms: 1200
+

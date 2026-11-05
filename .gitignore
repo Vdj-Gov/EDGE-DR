@@ -1,5 +1,5 @@
-# Datasets & Large Raw Data
-data/
+# Root Datasets & Large Raw Data (only top-level /data/ folder)
+/data/
 *.zip
 *.tar.gz
 
